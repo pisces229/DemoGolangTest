@@ -2,7 +2,15 @@ package database
 
 import "database/sql"
 
-func RecordStats(db *sql.DB, userID, productID int64) (err error) {
+func Query(db *sql.DB) (err error) {
+	rows, err := db.Query("SELECT 1 FROM PRODUCT WHERE USER_ID = ?", 0)
+	if err == nil {
+		defer rows.Close()
+	}
+	return
+}
+
+func Execute(db *sql.DB, userID, productID int64) (err error) {
 	tx, err := db.Begin()
 	if err != nil {
 		return

@@ -7,7 +7,33 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 )
 
-func Test_ShouldUpdateStats(test *testing.T) {
+func Test__Query(test *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		test.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	mock.ExpectQuery("SELECT 1 FROM PRODUCT").
+		// mock.ExpectQuery(regexp.QuoteMeta("SELECT 1 FROM PRODUCT")).
+		WillReturnRows(sqlmock.NewRows(nil))
+		// WillReturnError(fmt.Errorf("some error"))
+
+	// now we execute our method
+	if err = Query(db); err != nil {
+		test.Errorf("error was not expected while updating stats: %s", err)
+	}
+	// if err = Query(db); err == nil {
+	// 	test.Errorf("error was not expected while updating stats: %s", err)
+	// }
+
+	// we make sure that all expectations were met
+	if err := mock.ExpectationsWereMet(); err != nil {
+		test.Errorf("there were unfulfilled expectations: %s", err)
+	}
+}
+
+func Test__Execute__ShouldUpdateStats(test *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		test.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -24,7 +50,7 @@ func Test_ShouldUpdateStats(test *testing.T) {
 	mock.ExpectCommit()
 
 	// now we execute our method
-	if err = RecordStats(db, 2, 3); err != nil {
+	if err = Execute(db, 2, 3); err != nil {
 		test.Errorf("error was not expected while updating stats: %s", err)
 	}
 
@@ -34,8 +60,7 @@ func Test_ShouldUpdateStats(test *testing.T) {
 	}
 }
 
-// a failing test case
-func Test_ShouldRollbackStatUpdatesOnFailure(test *testing.T) {
+func Test__Execute__ShouldRollbackStatUpdatesOnFailure(test *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		test.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -52,7 +77,7 @@ func Test_ShouldRollbackStatUpdatesOnFailure(test *testing.T) {
 	mock.ExpectRollback()
 
 	// now we execute our method
-	if err = RecordStats(db, 2, 3); err == nil {
+	if err = Execute(db, 2, 3); err == nil {
 		test.Errorf("was expecting an error, but there was none")
 	}
 
