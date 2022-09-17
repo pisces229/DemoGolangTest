@@ -6,6 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test__Default(test *testing.T) {
+func Test_Default(test *testing.T) {
 	assert.Equal(test, "test", "test")
 }

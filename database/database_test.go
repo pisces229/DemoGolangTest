@@ -7,7 +7,7 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 )
 
-func Test__Query(test *testing.T) {
+func Test_Query(test *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		test.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -17,7 +17,7 @@ func Test__Query(test *testing.T) {
 	mock.ExpectQuery("SELECT 1 FROM PRODUCT").
 		// mock.ExpectQuery(regexp.QuoteMeta("SELECT 1 FROM PRODUCT")).
 		WillReturnRows(sqlmock.NewRows(nil))
-		// WillReturnError(fmt.Errorf("some error"))
+	// WillReturnError(fmt.Errorf("some error"))
 
 	// now we execute our method
 	if err = Query(db); err != nil {

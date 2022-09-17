@@ -3,45 +3,45 @@ package home
 import (
 	"testing"
 
-	"demo.golang.test/mock"
+	mock "demo.golang.test/mock/home"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 
-func Test__Home__Get_AnimalName(test *testing.T) {
-	cntroller := gomock.NewController(test)
-	defer cntroller.Finish()
+func Test_Home_GetAnimalName(test *testing.T) {
+	controller := gomock.NewController(test)
+	defer controller.Finish()
 	// Arrange
-	mockAniaml := mock.NewMockAnimal(cntroller)
+	mockAnimal := mock.NewMockAnimal(controller)
 	gomock.InOrder(
-		mockAniaml.EXPECT().Get_Name().Times(2).Return("Golang"),
+		mockAnimal.EXPECT().GetName().Times(2).Return("Golang"),
 	)
 	// Act
-	home := NewHome(mockAniaml)
-	reuslt1 := home.Get_AnimalName()
-	reuslt2 := home.Get_AnimalName()
+	home := NewHome(mockAnimal)
+	result1 := home.GetAnimalName()
+	result2 := home.GetAnimalName()
 	// Assert
-	assert.Equal(test, reuslt1, "Golang")
-	assert.Equal(test, reuslt2, "Golang")
+	assert.Equal(test, result1, "Golang")
+	assert.Equal(test, result2, "Golang")
 }
 
-func Test__Home__Get_AnimalSpeed(test *testing.T) {
-	cntroller := gomock.NewController(test)
-	defer cntroller.Finish()
+func Test_Home_GetAnimalSpeed(test *testing.T) {
+	controller := gomock.NewController(test)
+	defer controller.Finish()
 	// Arrange
-	mockAniaml := mock.NewMockAnimal(cntroller)
+	mockAnimal := mock.NewMockAnimal(controller)
 	gomock.InOrder(
-		mockAniaml.EXPECT().Get_Name().Times(1).Return(""),
-		mockAniaml.EXPECT().Get_Speed(gomock.Any()).Times(1).Return(10),
-		mockAniaml.EXPECT().Get_Name().Times(1).Return(""),
-		// mockAniaml.EXPECT().Get_Speed(1).Times(1).Return(20),
-		mockAniaml.EXPECT().Get_Speed(gomock.Any()).Times(1).Return(20),
+		mockAnimal.EXPECT().GetName().Times(1).Return(""),
+		mockAnimal.EXPECT().GetSpeed(gomock.Any()).Times(1).Return(10),
+		mockAnimal.EXPECT().GetName().Times(1).Return(""),
+		// mockAnimal.EXPECT().Get_Speed(1).Times(1).Return(20),
+		mockAnimal.EXPECT().GetSpeed(gomock.Any()).Times(1).Return(20),
 	)
 	// Act
-	home := NewHome(mockAniaml)
-	reuslt1 := home.Get_AnimalSpeed(1)
-	reuslt2 := home.Get_AnimalSpeed(2)
+	home := NewHome(mockAnimal)
+	result1 := home.GetAnimalSpeed(1)
+	result2 := home.GetAnimalSpeed(2)
 	// Assert
-	assert.Equal(test, reuslt1, 10)
-	assert.Equal(test, reuslt2, 20)
+	assert.Equal(test, result1, 10)
+	assert.Equal(test, result2, 20)
 }

@@ -1,20 +1,20 @@
 package home
 
-//go:generate mockgen -destination ../mock/animal.go -package mock demo.golang.test/home Animal
+//go:generate mockgen -destination ../mock/home/animal.go -package mock_home demo.golang.test/home Animal
 
 type Animal interface {
-	Get_Name() string
-	Get_Speed(base int) int
+	GetName() string
+	GetSpeed(base int) int
 }
 
 type Dog struct {
 	Name string
 }
 
-func (the *Dog) Get_Name() string {
+func (the *Dog) GetName() string {
 	return the.Name
 }
-func (the *Dog) Get_Speed(base int) int {
+func (the *Dog) GetSpeed(base int) int {
 	return base * 20
 }
 
@@ -22,10 +22,10 @@ type Cat struct {
 	Name string
 }
 
-func (the *Cat) Get_Name() string {
+func (the *Cat) GetName() string {
 	return the.Name
 }
-func (the *Cat) Get_Speed(base int) int {
+func (the *Cat) GetSpeed(base int) int {
 	return base * 10
 }
 
@@ -36,12 +36,12 @@ type Home struct {
 func NewHome(animal Animal) *Home {
 	return &Home{Animal: animal}
 }
-func (the *Home) Get_AnimalName() string {
+func (the *Home) GetAnimalName() string {
 	// the.Animal.Get_Name()
-	return the.Animal.Get_Name()
+	return the.Animal.GetName()
 }
-func (the *Home) Get_AnimalSpeed(base int) int {
-	the.Animal.Get_Name()
+func (the *Home) GetAnimalSpeed(base int) int {
+	the.Animal.GetName()
 	// the.Animal.Get_Speed()
-	return the.Animal.Get_Speed(base)
+	return the.Animal.GetSpeed(base)
 }
