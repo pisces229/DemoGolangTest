@@ -2,6 +2,9 @@ package database
 
 import (
 	"fmt"
+	"gorm.io/driver/sqlserver"
+	"gorm.io/gorm"
+	"regexp"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
@@ -33,7 +36,7 @@ func Test_Query(test *testing.T) {
 	}
 }
 
-func Test__Execute__ShouldUpdateStats(test *testing.T) {
+func Test_Execute_ShouldUpdateStats(test *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		test.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -60,7 +63,7 @@ func Test__Execute__ShouldUpdateStats(test *testing.T) {
 	}
 }
 
-func Test__Execute__ShouldRollbackStatUpdatesOnFailure(test *testing.T) {
+func Test_Execute_ShouldRollbackStatUpdatesOnFailure(test *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		test.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -81,6 +84,31 @@ func Test__Execute__ShouldRollbackStatUpdatesOnFailure(test *testing.T) {
 		test.Errorf("was expecting an error, but there was none")
 	}
 
+	// we make sure that all expectations were met
+	if err := mock.ExpectationsWereMet(); err != nil {
+		test.Errorf("there were unfulfilled expectations: %s", err)
+	}
+}
+
+func Test_GormQuery(test *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		test.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	gormDB, err := gorm.Open(sqlserver.New(
+		sqlserver.Config{
+			Conn: db,
+		}), &gorm.Config{})
+	sqlString := "SELECT * FROM \"person\" ORDER BY \"person\".\"row\" OFFSET 0 ROW FETCH NEXT 1 ROWS ONLY"
+
+	mock.ExpectQuery(regexp.QuoteMeta(sqlString)).
+		WillReturnRows(sqlmock.NewRows([]string{"row", "id", "name"}).
+			AddRow(0, "", 0))
+
+	// now we execute our method
+	GormQuery(gormDB)
 	// we make sure that all expectations were met
 	if err := mock.ExpectationsWereMet(); err != nil {
 		test.Errorf("there were unfulfilled expectations: %s", err)
